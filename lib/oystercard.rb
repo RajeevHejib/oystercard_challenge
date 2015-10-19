@@ -2,6 +2,8 @@ class Oystercard
 
   DEFAULT_BALANCE = 0
   MAX_BALANCE = 90
+  MIN_FARE = 1
+
   attr_reader :balance
 
   def initialize(balance=DEFAULT_BALANCE)
@@ -18,7 +20,7 @@ class Oystercard
   end
 
   def touch_in
-    @in_use = true
+    balance < MIN_FARE ? (raise "Seek Assistance") : (@in_use = true)
   end
 
   def touch_out
