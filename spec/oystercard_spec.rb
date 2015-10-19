@@ -8,4 +8,8 @@ describe Oystercard do
     expect(oystercard.balance).to eq described_class::DEFAULT_BALANCE
   end
 
+  it "tops up the balance by a specified amount" do
+    expect{ oystercard.top_up(10) }.to change(oystercard, :balance).by(10)
+  end
+
 end
