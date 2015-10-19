@@ -15,20 +15,23 @@ class Oystercard
     (balance + value) <= MAX_BALANCE ? (@balance += value) : (fail "limit of #{MAX_BALANCE} exceeded")
   end
 
-  def deduct(fare)
-    @balance -= fare
-  end
-
   def touch_in
     balance < MIN_FARE ? (raise "Seek Assistance") : (@in_use = true)
   end
 
   def touch_out
+    deduct(MIN_FARE)
     @in_use = false
   end
 
   def in_journey?
     @in_use
+  end
+
+  private
+
+  def deduct(fare)
+    @balance -= fare
   end
 
 end
