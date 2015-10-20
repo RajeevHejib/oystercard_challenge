@@ -4,30 +4,32 @@ class Oystercard
   MAX_BALANCE = 90
   MIN_FARE = 1
 
-  attr_reader :balance, :entry_station
+  attr_reader :balance, :entry_station, :list_of_journeys
 
   def initialize(balance=DEFAULT_BALANCE)
     @balance = balance
-    @in_use = false
+    @list_of_journeys = {}
   end
 
   def top_up(value)
-    (balance + value) <= MAX_BALANCE ? (@balance += value) : (fail "limit of #{MAX_BALANCE} exceeded")
+    raise "limit of #{MAX_BALANCE} exceeded" if exceeded?(value)
+    @balance += value
   end
 
   def touch_in(station)
-    @entry_station = station
-    balance < MIN_FARE ? (raise "Seek Assistance") : (@in_use = true)
+      raise ("Seek Assistance") if insufficient_funds?
+      @entry_station = station
+      list_of_journeys[entry_station] = nil
   end
 
-  def touch_out
+  def touch_out(station)
     deduct(MIN_FARE)
-    @in_use = false
+    list_of_journeys[entry_station] = station
     @entry_station = nil
   end
 
   def in_journey?
-    @entry_station != nil
+    entry_station != nil
   end
 
   private
@@ -36,4 +38,11 @@ class Oystercard
     @balance -= fare
   end
 
+  def insufficient_funds?
+    balance < MIN_FARE
+  end
+
+  def exceeded?(value)
+    (balance + value) >= MAX_BALANCE
+  end
 end

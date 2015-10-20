@@ -6,9 +6,10 @@ describe Oystercard do
 
   let(:station) { double :station }
 
-    it "Has a default of 0" do
-      expect(oystercard.balance).to eq described_class::DEFAULT_BALANCE
-    end
+
+  it "Has a default of 0" do
+    expect(oystercard.balance).to eq described_class::DEFAULT_BALANCE
+  end
 
   context "Balance" do
 
@@ -27,35 +28,43 @@ describe Oystercard do
 
   context "Journey" do
 
-    it "Touch in will change #in_use to true" do
-      oystercard.top_up(5)
+    before { oystercard.top_up(40) }
+
+    it "Touch in will set #in_journey? to true" do
       oystercard.touch_in(station)
       expect(oystercard).to be_in_journey
     end
 
     it "does not touch in if balance is less than #MIN_FARE" do
-      expect{ oystercard.touch_in(station) }.to raise_error "Seek Assistance"
+      card=Oystercard.new
+      expect{ card.touch_in(station) }.to raise_error "Seek Assistance"
     end
 
     it "Touch out will forget the entry station" do
-      oystercard.top_up(5)
       oystercard.touch_in(station)
-      oystercard.touch_out
+      oystercard.touch_out(station)
       expect(oystercard).not_to be_in_journey
     end
 
     it "Touch out deducts fare from balance" do
-      oystercard.top_up(5)
       oystercard.touch_in(station)
-      expect{ oystercard.touch_out }.to change{ oystercard.balance }.by(-described_class::MIN_FARE)
+      expect{ oystercard.touch_out(station) }.to change{ oystercard.balance }.by(-described_class::MIN_FARE)
     end
 
     it "records the entry station when touched in" do
-      oystercard.top_up(5)
       oystercard.touch_in(station)
       expect(oystercard.entry_station).to eq station
     end
 
+    it "at initialize the list of journeys is empty" do
+      expect(oystercard.list_of_journeys).to be_empty
+    end
+
+    it "Touch in and touch out will create one journey" do
+      oystercard.touch_in(station)
+      oystercard.touch_out(station)
+      expect(oystercard.list_of_journeys).not_to be_empty
+    end
 
   end
 
