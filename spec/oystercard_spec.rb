@@ -4,7 +4,7 @@ describe Oystercard do
 
   subject(:oystercard) { described_class.new }
 
-
+  let(:station) { double :station }
 
     it "Has a default of 0" do
       expect(oystercard.balance).to eq described_class::DEFAULT_BALANCE
@@ -29,26 +29,33 @@ describe Oystercard do
 
     it "Touch in will change #in_use to true" do
       oystercard.top_up(5)
-      oystercard.touch_in
+      oystercard.touch_in(station)
       expect(oystercard).to be_in_journey
     end
 
     it "does not touch in if balance is less than #MIN_FARE" do
-      expect{ oystercard.touch_in }.to raise_error "Seek Assistance"
+      expect{ oystercard.touch_in(station) }.to raise_error "Seek Assistance"
     end
 
-    it "Touch out will change #in_use to false" do
+    it "Touch out will forget the entry station" do
       oystercard.top_up(5)
-      oystercard.touch_in
+      oystercard.touch_in(station)
       oystercard.touch_out
       expect(oystercard).not_to be_in_journey
     end
 
     it "Touch out deducts fare from balance" do
       oystercard.top_up(5)
-      oystercard.touch_in
+      oystercard.touch_in(station)
       expect{ oystercard.touch_out }.to change{ oystercard.balance }.by(-described_class::MIN_FARE)
     end
+
+    it "records the entry station when touched in" do
+      oystercard.top_up(5)
+      oystercard.touch_in(station)
+      expect(oystercard.entry_station).to eq station
+    end
+
 
   end
 
