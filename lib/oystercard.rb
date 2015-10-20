@@ -1,12 +1,12 @@
-require_relative 'station.rb'  # => true
+require_relative 'station.rb'
 
 class Oystercard
 
-  DEFAULT_BALANCE = 0  # => 0
-  MAX_BALANCE = 90     # => 90
-  MIN_FARE = 1         # => 1
+  DEFAULT_BALANCE = 0
+  MAX_BALANCE = 90
+  MIN_FARE = 1
 
-  attr_reader :balance, :entry_station, :list_of_journeys  # => nil
+  attr_reader :balance, :entry_station, :list_of_journeys
 
   def initialize(balance=DEFAULT_BALANCE)
     @balance = balance
@@ -34,7 +34,7 @@ class Oystercard
     entry_station != nil
   end
 
-  private  # => Oystercard
+  private
 
   def deduct(fare)
     @balance -= fare
@@ -48,8 +48,3 @@ class Oystercard
     (balance + value) >= MAX_BALANCE
   end
 end
-
-
-list_of_journeys = { 's1' => 's2' }  # => {"s1"=>"s2"}
-
-list_of_journeys['s1']  # => "s2"
