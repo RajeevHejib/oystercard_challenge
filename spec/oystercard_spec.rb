@@ -1,4 +1,5 @@
 require 'oystercard'
+require 'station'
 
 describe Oystercard do
 
@@ -64,6 +65,14 @@ describe Oystercard do
       oystercard.touch_in(station)
       oystercard.touch_out(station)
       expect(oystercard.list_of_journeys).not_to be_empty
+    end
+
+    it "#list_of_journeys contains the station and zone number" do
+      s1 = Station.new('stationA', 1)
+      s2 = Station.new('stationB', 2)
+      oystercard.touch_in(s1)
+      oystercard.touch_out(s2)
+      expect(oystercard.list_of_journeys.keys[0].zone).to eq 1
     end
 
   end
