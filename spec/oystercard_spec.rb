@@ -8,6 +8,8 @@ describe Oystercard do
   let(:station1) { double(:station, :name => 'stationA', :zone => 1) }
   let(:station2) { double(:station, :name => 'stationB', :zone => 2) }
 
+  let (:entry_station) {double(:list_of_journeys)}
+
   it "Has a default of 0" do
     expect(oystercard.balance).to eq described_class::DEFAULT_BALANCE
   end
@@ -41,43 +43,11 @@ describe Oystercard do
       expect{ card.touch_in(station1) }.to raise_error "Seek Assistance"
     end
 
-    it "Touch out will forget the entry station" do
-      oystercard.touch_in(station1)
-      oystercard.touch_out(station2)
-      expect(oystercard).not_to be_in_journey
-    end
-
     it "Touch out deducts fare from balance" do
       oystercard.touch_in(station1)
       expect{ oystercard.touch_out(station2) }.to change{ oystercard.balance }.by(-described_class::MIN_FARE)
     end
 
-    it "records the entry station when touched in" do
-      oystercard.touch_in(station1)
-      expect(oystercard.entry_station).to eq station1
-    end
-
-    it "at initialize the list of journeys is empty" do
-      expect(oystercard.list_of_journeys).to be_empty
-    end
-
-    it "Touch in and touch out will create one journey" do
-      oystercard.touch_in(station1)
-      oystercard.touch_out(station2)
-      expect(oystercard.list_of_journeys).not_to be_empty
-    end
-
-    it "#list_of_journeys contains the zone number" do
-      oystercard.touch_in(station1)
-      oystercard.touch_out(station2)
-      expect(oystercard.list_of_journeys[station1].zone).to eq 2
-    end
-
-    it "journey history will be equal to one complete journey" do
-      oystercard.touch_in(station1)
-      oystercard.touch_out(station2)
-      expect(oystercard.history).to include(oystercard.list_of_journeys)      
-    end
 
   end
 
