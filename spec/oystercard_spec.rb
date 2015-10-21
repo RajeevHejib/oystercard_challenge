@@ -73,6 +73,12 @@ describe Oystercard do
       expect(oystercard.list_of_journeys[station1].zone).to eq 2
     end
 
+    it "journey history will be equal to one complete journey" do
+      oystercard.touch_in(station1)
+      oystercard.touch_out(station2)
+      expect(oystercard.history).to include(oystercard.list_of_journeys)      
+    end
+
   end
 
 end
