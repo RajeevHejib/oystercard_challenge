@@ -6,6 +6,7 @@ class Oystercard
   DEFAULT_BALANCE = 0
   MAX_BALANCE = 90
   MIN_FARE = 1
+  PENALTY_FARE = 6
 
   attr_reader :balance, :entry_station, :journey
 
@@ -25,7 +26,7 @@ class Oystercard
   end
 
   def touch_out(station)
-    deduct(MIN_FARE)
+    journey.list_of_journeys[:entry_station] == nil ? deduct(PENALTY_FARE) : deduct(MIN_FARE)
     journey.set_exit_station(station)
   end
 

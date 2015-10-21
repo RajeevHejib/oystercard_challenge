@@ -47,8 +47,14 @@ describe Oystercard do
       oystercard.touch_in(station1)
       expect{ oystercard.touch_out(station2) }.to change{ oystercard.balance }.by(-described_class::MIN_FARE)
     end
+  end
 
+  context "when a user touches out but does not touch in" do
 
+    before { oystercard.top_up(40) }
+    it "a penalty fare will be deducted from their balance" do
+      expect{oystercard.touch_out(station1)}.to change{oystercard.balance}.by(-(described_class::PENALTY_FARE))
+    end
   end
 
 end
